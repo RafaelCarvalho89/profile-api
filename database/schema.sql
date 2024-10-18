@@ -9,17 +9,9 @@ CREATE TABLE `companies` (
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-DELIMITER $$
-
 CREATE TRIGGER `before_insert_companies` BEFORE INSERT ON `companies`
 FOR EACH ROW
-BEGIN
-  IF NEW.id IS NULL OR NEW.id = '' THEN
-    SET NEW.id = UUID();
-  END IF;
-END$$
-
-DELIMITER ;
+SET NEW.id = IFNULL(NULLIF(NEW.id, ''), UUID());
 
 CREATE TABLE `company_addresses` (
   `id` CHAR(36) PRIMARY KEY NOT NULL,
@@ -35,17 +27,9 @@ CREATE TABLE `company_addresses` (
   FOREIGN KEY (`company_id`) REFERENCES `companies`(`id`) ON DELETE CASCADE
 );
 
-DELIMITER $$
-
 CREATE TRIGGER `before_insert_company_addresses` BEFORE INSERT ON `company_addresses`
 FOR EACH ROW
-BEGIN
-  IF NEW.id IS NULL OR NEW.id = '' THEN
-    SET NEW.id = UUID();
-  END IF;
-END$$
-
-DELIMITER ;
+SET NEW.id = IFNULL(NULLIF(NEW.id, ''), UUID());
 
 CREATE TABLE `company_profiles` (
   `id` CHAR(36) PRIMARY KEY NOT NULL,
@@ -56,17 +40,9 @@ CREATE TABLE `company_profiles` (
   FOREIGN KEY (`company_id`) REFERENCES `companies`(`id`) ON DELETE CASCADE
 );
 
-DELIMITER $$
-
 CREATE TRIGGER `before_insert_company_profiles` BEFORE INSERT ON `company_profiles`
 FOR EACH ROW
-BEGIN
-  IF NEW.id IS NULL OR NEW.id = '' THEN
-    SET NEW.id = UUID();
-  END IF;
-END$$
-
-DELIMITER ;
+SET NEW.id = IFNULL(NULLIF(NEW.id, ''), UUID());
 
 CREATE INDEX `idx_companies_name` ON `companies`(`name`);
 CREATE INDEX `idx_companies_email` ON `companies`(`email`);
