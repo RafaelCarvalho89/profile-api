@@ -7,7 +7,7 @@ export type ProfileCompanyDataType = BaseDataType & {
   profile_category: ProfileCategoryType;
   company: CompanyDataType;
   address: CompanyAddressDataType;
-  termsAccepted: boolean;
+  terms_accepted: boolean;
 };
 
 export type ProfileCompanyType = BaseType & {
