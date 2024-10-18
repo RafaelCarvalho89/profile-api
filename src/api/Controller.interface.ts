@@ -5,4 +5,4 @@ export interface ControllerInterface {
   handle(request: RequestType): Promise<ResponseType<Record<string, any>>>;
 }
 
-export type ControllerFactoryType = (dataSource: Promise<Connection>) => ControllerInterface;
+export type ControllerFactoryType = (dataSource: Connection) => ControllerInterface;

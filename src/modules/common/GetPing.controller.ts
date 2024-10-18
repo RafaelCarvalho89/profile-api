@@ -7,6 +7,6 @@ class GetPingController {
   }
 }
 
-export const GetPongControllerFactory = (dataSource: Promise<Connection>) => {
+export const GetPongControllerFactory = (dataSource: Connection) => {
   return new GetPingController();
 };

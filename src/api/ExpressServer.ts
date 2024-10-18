@@ -11,7 +11,7 @@ export class ExpressServer {
     private readonly PORT: number,
     private readonly HOST: string,
     private readonly routes: RouteMapType,
-    private readonly dataSource: Promise<Connection>,
+    private readonly dataSource: Connection,
   ) {
     this.server.use(json());
     this.setRoutes(this.routes);
