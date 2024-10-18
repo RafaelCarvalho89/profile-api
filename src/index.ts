@@ -1,14 +1,12 @@
-import express from 'express';
-import 'dotenv/config'
+import { Application } from './Application';
+import 'dotenv/config';
 
-const app = express();
+const main = async () => {
+  const host = process.env.API_HOST || 'localhost';
+  const port = Number(process.env.API_PORT) || 4568;
 
-const port = process.env.PORT || 4568;
+  const app = new Application(host, port);
+  await app.start();
+};
 
-app.get('/ping', (req, res) => {
-  return res.send('pong');
-});
-
-app.listen(port, () => {
-  console.log(`Escutando na porta ${port}`);
-});
+main();
