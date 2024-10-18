@@ -1,29 +1,22 @@
 import { connection, Connection } from './db/MysqlConfig';
-import express, { Application as ExpressApplication } from 'express';
+import { RouteMapType, routes } from './api/Routes';
+import { ExpressServer } from './api/ExpressServer';
 
 export class Application {
   private readonly dbConnection: Promise<Connection>;
-  private readonly apiServer = express();
-  private readonly host: string;
-  private readonly port: number;
+  private readonly routes: RouteMapType;
+  private readonly apiServer;
 
   constructor(host: string, port: number) {
     this.dbConnection = connection;
-    this.host = host;
-    this.port = port;
+    this.routes = routes;
+    this.apiServer = new ExpressServer(port, host, this.routes, this.dbConnection);
   }
 
   async start() {
     try {
       (await this.dbConnection).connect();
-
-      this.apiServer.get('/ping', (req, res) => {
-        return res.send('pong');
-      });
-      
-      this.apiServer.listen(this.port, () => {
-        console.log(`[LOG] EXPRESS - Http server listen on http://${this.host}:${this.port}`);
-      });
+      await this.apiServer.start();
     } catch (error) {
       (await this.dbConnection).end();
       console.error(error);
