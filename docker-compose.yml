@@ -13,3 +13,4 @@ services:
       - $MYSQLDB_PORT:3306
     volumes:
       - ./data/:/var/lib/mysql
+      - ./database/:/docker-entrypoint-initdb.d/
