@@ -3,6 +3,7 @@ import { ControllerInterface } from './Controller.interface';
 import { RequestMethodType } from './Request.types';
 import { RouteMapType } from './Routes';
 import { Connection } from '../db/MysqlConfig';
+import cors from 'cors';
 
 export class ExpressServer {
   private readonly server = express();
@@ -13,7 +14,7 @@ export class ExpressServer {
     private readonly routes: RouteMapType,
     private readonly dataSource: Connection,
   ) {
-    this.server.use(json());
+    this.server.use(cors(), json());
     this.setRoutes(this.routes);
   }
 
