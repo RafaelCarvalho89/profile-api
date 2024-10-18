@@ -23,7 +23,7 @@ DELIMITER ;
 
 CREATE TABLE `company_addresses` (
   `id` CHAR(36) PRIMARY KEY NOT NULL,
-  `company_id` CHAR(36) NOT NULL,
+  `company_id` CHAR(36) NOT NULL UNIQUE,
   `postal_code` CHAR(8) NOT NULL,
   `street` VARCHAR(255) NOT NULL,
   `number` VARCHAR(10) NOT NULL,
@@ -50,7 +50,7 @@ DELIMITER ;
 CREATE TABLE `company_profiles` (
   `id` CHAR(36) PRIMARY KEY NOT NULL,
   `profile_category` ENUM('seller', 'buyer') NOT NULL, 
-  `company_id` CHAR(36) NOT NULL,
+  `company_id` CHAR(36) NOT NULL UNIQUE,
   `terms_accepted` TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`company_id`) REFERENCES `companies`(`id`) ON DELETE CASCADE
