@@ -1,4 +1,4 @@
-import { ErrorHandler } from '../modules/error/ErrorHandler';
+import { ERROR_NAME_LIST } from '../modules/error/Error.type';
 import { InternalServerError } from '../modules/error/services/InternalServerError.service';
 import { NotImplementedError } from '../modules/error/services/NotImplementedError.service';
 import { ControllerInterface } from './Controller.interface';
@@ -15,8 +15,9 @@ export abstract class Controller implements ControllerInterface {
   }
 
   protected handleError(error: any) {
-    const handledError =
-      error instanceof ErrorHandler ? error : new InternalServerError(error.stack);
+    const handledError = ERROR_NAME_LIST.includes(error.name)
+      ? error
+      : new InternalServerError(error.stack);
 
     return apiResponseFactory(
       handledError.cause,
