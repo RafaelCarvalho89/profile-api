@@ -4,7 +4,7 @@ export const API_ERROR_LIST = [
   'NOT_IMPLEMENTED',
 ] as const;
 
-export const PARAM_ERROR_LIST = ['INVALID_SIZE', 'INVALID_TYPE', 'MISSING_VALUE'] as const;
+export const PARAM_ERROR_LIST = ['INVALID_SIZE', 'INVALID_TYPE', 'MISSING_VALUE', 'INVALID_REQUIREMENTS'] as const;
 
 export const ERROR_NAME_LIST = [...API_ERROR_LIST, ...PARAM_ERROR_LIST] as const;
 
