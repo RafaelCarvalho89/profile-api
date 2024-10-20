@@ -1,3 +1,4 @@
+import { ValidatorInterface } from '../validator/Validator';
 import { ProfileCategoryType, ProfileCompanyType } from './ProfileCompany.types';
 
 export type CreateProfileCompanyServiceParamsType = {
@@ -23,9 +24,13 @@ export interface CreateProfileCompanyServiceInterface {
 }
 
 export class CreateProfileCompanyService implements CreateProfileCompanyServiceInterface {
-  constructor() {}
+  constructor(
+    private readonly validator: ValidatorInterface,
+  ) {}
 
   async execute(params: CreateProfileCompanyServiceParamsType): Promise<ProfileCompanyType> {
+    await this.validator.validate(params);
+
     return mockedProfileCompany;
   }
 }
