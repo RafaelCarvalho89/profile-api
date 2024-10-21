@@ -4,11 +4,12 @@ import { CreateProfileCompanyService } from './CreateProfileCompany.service';
 import { z } from 'zod';
 import { Validator } from '../validator/Validator';
 import { isValidCNPJ, isValidCPF, UF_REGEX, isValidCEP } from '../validator/Utils';
+import { AddProfileCompanyTransaction } from './AddProfileCompany.transaction';
 
 export const PostProfileCompanyControllerFactory = (dataSource: Connection) => {
   const validator = new Validator(CreateProfileCompanySchema);
-
-  const createProfileCompanyService = new CreateProfileCompanyService(validator);
+  const addProfileCompanyTransaction = new AddProfileCompanyTransaction(dataSource);
+  const createProfileCompanyService = new CreateProfileCompanyService(validator, addProfileCompanyTransaction);
 
   return new PostProfileCompanyController(createProfileCompanyService);
 }
