@@ -5,11 +5,17 @@ import { z } from 'zod';
 import { Validator } from '../validator/Validator';
 import { isValidCNPJ, isValidCPF, UF_REGEX, isValidCEP } from '../validator/Utils';
 import { AddProfileCompanyTransaction } from './AddProfileCompany.transaction';
+import { FindOneProfileCompanyRepository } from './findOneProfileCompany.repository';
 
 export const PostProfileCompanyControllerFactory = (dataSource: Connection) => {
   const validator = new Validator(CreateProfileCompanySchema);
+  const findOneProfileCompanyTransaction = new FindOneProfileCompanyRepository(dataSource);
   const addProfileCompanyTransaction = new AddProfileCompanyTransaction(dataSource);
-  const createProfileCompanyService = new CreateProfileCompanyService(validator, addProfileCompanyTransaction);
+  const createProfileCompanyService = new CreateProfileCompanyService(
+    validator,
+    findOneProfileCompanyTransaction,
+    addProfileCompanyTransaction
+  );
 
   return new PostProfileCompanyController(createProfileCompanyService);
 }

@@ -1,5 +1,7 @@
 import { Connection } from '../../db/MysqlConfig';
-import { insertAddressQuery, insertCompanyQuery, insertProfileQuery, selectProfileCompanyQuery, SelectProfileCompanyQueryType } from './ProfileCompany.queries';
+import { findOneCompanyQuery, insertCompanyQuery, insertCompanyAddressQuery } from '../company/Company.queries';
+import { CompanyDataType } from '../company/Company.types';
+import { insertProfileQuery, selectProfileCompanyQuery,SelectProfileCompanyQueryType } from './ProfileCompany.queries';
 import { ProfileCategoryType, ProfileCompanyDataType } from './ProfileCompany.types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -30,8 +32,6 @@ export class AddProfileCompanyTransaction implements AddProfileCompanyTransactio
 
   async execute(params: AddProfileCompanyTransactionParamsType): Promise<ProfileCompanyDataType> {
     try {
-      await this.dataSource.beginTransaction();
-
       const {
         cnpj,
         responsibleCpf,
@@ -50,17 +50,27 @@ export class AddProfileCompanyTransaction implements AddProfileCompanyTransactio
         termsAccepted,
       } = params;
 
-      const companyId = uuidv4();
+      const [foundCompanyResult] = await this.dataSource.execute({ sql: findOneCompanyQuery, values: [cnpj] });
 
-      await this.dataSource.execute(
-        insertCompanyQuery,
-        [companyId, cnpj, responsibleCpf, name, phone, mobilePhone, email]
-      );
+      const foundCompany = foundCompanyResult as unknown as CompanyDataType[];
 
-      await this.dataSource.execute(
-        insertAddressQuery,
-        [companyId, postalCode, street, number, complement, neighborhood, city, state]
-      );
+      const isPersistedCompany = foundCompany.length > 0;
+
+      const companyId = isPersistedCompany ? foundCompany[0].id : uuidv4();
+
+      await this.dataSource.beginTransaction();
+
+      if (!isPersistedCompany) {
+        await this.dataSource.execute(
+          insertCompanyQuery,
+          [companyId, cnpj, responsibleCpf, name, phone, mobilePhone, email]
+        );
+
+        await this.dataSource.execute(
+          insertCompanyAddressQuery,
+          [companyId, postalCode, street, number, complement, neighborhood, city, state]
+        );
+      }
 
       await this.dataSource.execute(
         insertProfileQuery,
@@ -69,7 +79,7 @@ export class AddProfileCompanyTransaction implements AddProfileCompanyTransactio
 
       await this.dataSource.commit();
 
-      const [queryResult] = await this.dataSource.query({ sql: selectProfileCompanyQuery, values: [companyId, profileCategory], rowsAsArray: false,});
+      const [queryResult] = await this.dataSource.execute({ sql: selectProfileCompanyQuery, values: [companyId, profileCategory] });
       
       const profileCompanyResult = queryResult as unknown as SelectProfileCompanyQueryType[];
 
@@ -80,8 +90,6 @@ export class AddProfileCompanyTransaction implements AddProfileCompanyTransactio
       console.error('Executed rollback, transaction error:', error);
 
       throw error;
-    } finally {
-      this.dataSource.end();
     }
   }
 

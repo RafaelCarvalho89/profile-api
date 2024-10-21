@@ -1,5 +1,7 @@
+import { ConflictValueError } from '../error/services/ConflictValueError.service';
 import { ValidatorInterface } from '../validator/Validator';
 import { AddProfileCompanyTransactionInterface } from './AddProfileCompany.transaction';
+import { FindOneProfileCompanyRepositoryInterface } from './findOneProfileCompany.repository';
 import { ProfileCompanySerializer } from './ProfileCompany.serializer';
 import { ProfileCategoryType, ProfileCompanyType } from './ProfileCompany.types';
 
@@ -28,11 +30,18 @@ export interface CreateProfileCompanyServiceInterface {
 export class CreateProfileCompanyService implements CreateProfileCompanyServiceInterface {
   constructor(
     private readonly validator: ValidatorInterface,
+    private readonly findOneProfileCompanyTransaction: FindOneProfileCompanyRepositoryInterface,
     private readonly addProfileCompanyTransaction: AddProfileCompanyTransactionInterface,
   ) {}
 
   async execute(params: CreateProfileCompanyServiceParamsType): Promise<ProfileCompanyType> {
     await this.validator.validate(params);
+
+    const foundProfileCompany = await this.findOneProfileCompanyTransaction.execute(params);
+
+    if (foundProfileCompany) {
+      throw new ConflictValueError('Profile Company already exists for this CNPJ and Profile Category');
+    }
 
     const profileCompany = await this.addProfileCompanyTransaction.execute(params);
 

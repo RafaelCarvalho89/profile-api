@@ -1,18 +1,14 @@
 import { ProfileCategoryType } from './ProfileCompany.types';
 
-export const insertCompanyQuery = `
-  INSERT INTO companies (id, cnpj, responsible_cpf, name, phone, mobile_phone, email)
-  VALUES (?, ?, ?, ?, ?, ?, ?);
-`;
-
-export const insertAddressQuery = `
-  INSERT INTO company_addresses (company_id, postal_code, street, number, complement, neighborhood, city, state)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?);
-`;
-
 export const insertProfileQuery = `
   INSERT INTO company_profiles (profile_category, company_id, terms_accepted)
   VALUES (?, ?, ?);
+`;
+
+export const findOneProfileCompanyQuery = `
+  SELECT cp.* FROM company_profiles cp
+  INNER JOIN companies c ON cp.company_id = c.id
+  WHERE cp.profile_category = ? AND c.cnpj = ?;
 `;
 
 export type SelectProfileCompanyQueryType = {

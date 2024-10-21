@@ -16,3 +16,9 @@ export type ProfileCompanyType = BaseType & {
   address: AddressType;
   termsAccepted: boolean;
 };
+
+export type CompanyProfileDataType = BaseDataType & {
+  profileCategory: ProfileCategoryType;
+  company_id: string;
+  terms_accepted: boolean;
+};
