@@ -69,7 +69,7 @@ export class AddProfileCompanyTransaction implements AddProfileCompanyTransactio
 
       await this.dataSource.commit();
 
-      const [queryResult] = await this.dataSource.query({ sql: selectProfileCompanyQuery, values: [companyId], rowsAsArray: false,});
+      const [queryResult] = await this.dataSource.query({ sql: selectProfileCompanyQuery, values: [companyId, profileCategory], rowsAsArray: false,});
       
       const profileCompanyResult = queryResult as unknown as SelectProfileCompanyQueryType[];
 

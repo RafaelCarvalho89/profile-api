@@ -65,5 +65,5 @@ export const selectProfileCompanyQuery = `
   FROM company_profiles cp
   INNER JOIN companies c ON cp.company_id = c.id
   INNER JOIN company_addresses ca ON c.id = ca.company_id
-  WHERE cp.company_id = ?;
+  WHERE cp.company_id = ? AND cp.profile_category = ?;
 `;

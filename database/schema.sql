@@ -34,10 +34,11 @@ SET NEW.id = IFNULL(NULLIF(NEW.id, ''), UUID());
 CREATE TABLE `company_profiles` (
   `id` CHAR(36) PRIMARY KEY NOT NULL,
   `profile_category` ENUM('seller', 'buyer') NOT NULL, 
-  `company_id` CHAR(36) NOT NULL UNIQUE,
+  `company_id` CHAR(36) NOT NULL,
   `terms_accepted` TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`company_id`) REFERENCES `companies`(`id`) ON DELETE CASCADE
+  FOREIGN KEY (`company_id`) REFERENCES `companies`(`id`) ON DELETE CASCADE,
+  UNIQUE KEY `unique_company_profile` (`company_id`, `profile_category`)
 );
 
 CREATE TRIGGER `before_insert_company_profiles` BEFORE INSERT ON `company_profiles`
